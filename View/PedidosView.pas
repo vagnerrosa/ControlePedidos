@@ -77,6 +77,7 @@ type
     sBtnNovoPedido: TSpeedButton;
     pnlNumeroPedido: TPanel;
     lblPedido: TLabel;
+    btnExcPedido: TSpeedButton;
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormShow(Sender: TObject);
     procedure FormKeyPress(Sender: TObject; var Key: Char);
@@ -97,6 +98,7 @@ type
     procedure BtnGravarPedidoClick(Sender: TObject);
     procedure sBtnBuscaClick(Sender: TObject);
     procedure sBtnNovoPedidoClick(Sender: TObject);
+    procedure btnExcPedidoClick(Sender: TObject);
   private
     { Private declarations }
     Acao : string;
@@ -110,6 +112,7 @@ type
     procedure BuscarPedido;
     procedure GerenciaBuscaBotoes;
     function  RetornaDescricaoProduto(codProd : integer): String;
+    function ConvertToFloat(const AValue: string): Double;
   public
     { Public declarations }
     constructor Create(AOwner: TComponent); override;
@@ -245,8 +248,8 @@ end;
 
 procedure TfrmPedidosView.edtCodigoProdutoExit(Sender: TObject);
 begin
-if edtCodigoProduto.Text <> '' then
-  LocalizaProduto(strtoint(edtCodigoProduto.Text));
+  if edtCodigoProduto.Text <> '' then
+    LocalizaProduto(strtoint(edtCodigoProduto.Text));
 end;
 
 procedure TfrmPedidosView.edtVlrUnitarioKeyPress(Sender: TObject;
@@ -312,11 +315,12 @@ end;
 
 procedure TfrmPedidosView.sBtnNovoPedidoClick(Sender: TObject);
 begin
-Acao := 'Novo';
-edtCodCLiente.Text := '';
-GerenciaBuscaBotoes;
-LimparCamposGeral;
-edtCodCLiente.SetFocus;
+  Acao := 'Novo';
+  edtCodCLiente.Text := '';
+  EditNumeroPedido.Text := '';
+  GerenciaBuscaBotoes;
+  LimparCamposGeral;
+  edtCodCLiente.SetFocus;
 end;
 
 procedure TfrmPedidosView.LimparCamposGeral;
@@ -345,6 +349,12 @@ end;
 
 procedure TfrmPedidosView.btnAdicionarClick(Sender: TObject);
 begin
+  if edtCodigoProduto.Text = '' then
+  begin
+    ShowMessage('Preencha o Código do Produto.');
+    edtCodigoProduto.SetFocus;
+    exit;
+  end;
 
   if ((edtQTD.Text ='0') or (edtQTD.Text =''))  then
   begin
@@ -361,9 +371,31 @@ begin
   end;
 
   GravarItemNaMemTable(0, strtoint(edtCodigoProduto.Text), strtoint(edtQTD.Text), StrToFloat(edtVlrUnitario.text), StrToFloat(edtVlrUnitario.Text), lblNomeProduto.Caption);
-  edtTotalAPagar.Text := Formatfloat('###,###0.00',CalcularValorTotal);
+  edtTotalAPagar.Text := Formatfloat('##,###,###,###,###0.00',CalcularValorTotal);
   LimparCamposProduto;
   edtCodigoProduto.SetFocus;
+end;
+
+procedure TfrmPedidosView.btnExcPedidoClick(Sender: TObject);
+var
+  NumeroPedido: Integer;
+  Controller: TPedidoController;
+begin
+    // Confirma a exclusão
+    if Application.MessageBox(PChar('Tem certeza que deseja excluir o Pedido:' +EditNumeroPedido.Text+'  ?'), 'Exclusão', MB_ICONQUESTION + MB_YESNO) = ID_YES then
+    begin
+      // Obtenha o número do pedido a partir de um campo de entrada (ex: Edit)
+      if not TryStrToInt(EditNumeroPedido.Text, NumeroPedido) then
+      begin
+        ShowMessage('Número do pedido inválido.');
+        Exit;
+      end;
+      if ControllerPedido.DeletarPedido(NumeroPedido) then
+        ShowMessage('Pedido excluído com sucesso!')
+      else
+        ShowMessage('Erro ao excluir o pedido.');
+     sBtnNovoPedido.Click;
+    end;
 end;
 
 procedure TfrmPedidosView.BtnGravarPedidoClick(Sender: TObject);
@@ -375,14 +407,13 @@ begin
       edtCodCLiente.SetFocus;
       exit;
    end;
-
    if mtbPedidoItem.IsEmpty then
    begin
       ShowMessage('Erro ao gravar o pedido.' + #13 + 'Itens do Pedidos não podem estar vazios');
       exit;
    end;
   // Grava os dados do pedido
-  GravarNaMemTable(date, strtoint(edtCodCLiente.Text),StrToFloat(edtTotalAPagar.Text));
+  GravarNaMemTable(date, strtoint(edtCodCLiente.Text),ConvertToFloat(edtTotalAPagar.Text));
    // Chama o método da Controller para gravar o pedido
   if ControllerPedido.GravarPedido(mtbPedido, mtbPedidoItem) then
    begin
@@ -391,7 +422,6 @@ begin
    end
   else
     ShowMessage('Erro ao gravar o pedido.');
-
   GerenciaBuscaBotoes;
 end;
 
@@ -513,11 +543,9 @@ begin
      edtCodCLiente.Text := IntToStr(Pedido.CodigoCliente);
      LocalizaCliente(StrToInt(edtCodCLiente.Text));
      lblData.Caption := DateToStr(Pedido.DataEmissao);
-
     // Limpa o grid de produtos
     mtbPedidoItem.Close; // Assume que você esteja usando um dataset para os produtos
     mtbPedidoItem.Open;
-
     for var Produto in Produtos do
     begin
       mtbPedidoItem.Append; // Adiciona uma nova linha
@@ -542,5 +570,14 @@ begin
   end;
 end;
 
+function TfrmPedidosView.ConvertToFloat(const AValue: string): Double;
+var
+  LimpaValor: string;
+begin
+  // Remove os pontos
+  LimpaValor := StringReplace(AValue, '.', '', [rfReplaceAll]);
+  // Converte a string limpa para float
+  Result := StrToFloat(LimpaValor);
+end;
 
 end.

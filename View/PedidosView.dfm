@@ -30,7 +30,6 @@ object frmPedidosView: TfrmPedidosView
     Color = 14581528
     ParentBackground = False
     TabOrder = 0
-    ExplicitTop = 721
   end
   object pnlBackground: TPanel
     Left = 0
@@ -42,8 +41,6 @@ object frmPedidosView: TfrmPedidosView
     Color = 5395026
     ParentBackground = False
     TabOrder = 1
-    ExplicitTop = 158
-    ExplicitHeight = 516
     object pnlConsultaProduto: TPanel
       AlignWithMargins = True
       Left = 20
@@ -59,7 +56,6 @@ object frmPedidosView: TfrmPedidosView
       Color = clWhite
       ParentBackground = False
       TabOrder = 0
-      ExplicitHeight = 476
       object lblNomeProduto: TLabel
         AlignWithMargins = True
         Left = 3
@@ -133,7 +129,6 @@ object frmPedidosView: TfrmPedidosView
         ParentBackground = False
         ParentFont = False
         TabOrder = 4
-        ExplicitTop = 401
         object BtnGravarPedido: TBitBtn
           Left = 49
           Top = 24
@@ -227,7 +222,6 @@ object frmPedidosView: TfrmPedidosView
       Color = clWhite
       ParentBackground = False
       TabOrder = 1
-      ExplicitHeight = 476
       object pnlTotalPagar: TPanel
         Left = 0
         Top = 380
@@ -238,7 +232,6 @@ object frmPedidosView: TfrmPedidosView
         Color = 14581528
         ParentBackground = False
         TabOrder = 1
-        ExplicitTop = 401
         object lblTotalAPagar: TLabel
           AlignWithMargins = True
           Left = 3
@@ -408,9 +401,6 @@ object frmPedidosView: TfrmPedidosView
       Color = clGray
       ParentBackground = False
       TabOrder = 1
-      ExplicitLeft = 117
-      ExplicitTop = 9
-      ExplicitHeight = 74
       object lblPedido: TLabel
         AlignWithMargins = True
         Left = 3
@@ -426,8 +416,17 @@ object frmPedidosView: TfrmPedidosView
         Font.Name = 'Segoe UI'
         Font.Style = []
         ParentFont = False
-        ExplicitLeft = 110
-        ExplicitTop = 21
+        ExplicitHeight = 30
+      end
+      object btnExcPedido: TSpeedButton
+        Left = 256
+        Top = 0
+        Width = 124
+        Height = 50
+        Align = alRight
+        Caption = 'Excluir o Pedido'
+        OnClick = btnExcPedidoClick
+        ExplicitTop = -2
       end
     end
   end
@@ -449,7 +448,6 @@ object frmPedidosView: TfrmPedidosView
       Align = alTop
       BevelOuter = bvNone
       TabOrder = 0
-      ExplicitTop = -2
       object lblTopo: TLabel
         AlignWithMargins = True
         Left = 3
@@ -494,12 +492,11 @@ object frmPedidosView: TfrmPedidosView
         Color = clGray
         ParentBackground = False
         TabOrder = 0
-        ExplicitTop = 7
         object Label3: TLabel
           AlignWithMargins = True
           Left = 3
           Top = 15
-          Width = 150
+          Width = 128
           Height = 31
           Margins.Top = 15
           Margins.Bottom = 15
@@ -511,8 +508,7 @@ object frmPedidosView: TfrmPedidosView
           Font.Name = 'Segoe UI'
           Font.Style = []
           ParentFont = False
-          ExplicitTop = 30
-          ExplicitHeight = 41
+          ExplicitHeight = 30
         end
         object sBtnBusca: TSpeedButton
           Left = 231
@@ -569,7 +565,7 @@ object frmPedidosView: TfrmPedidosView
         Font.Name = 'Segoe UI'
         Font.Style = []
         ParentFont = False
-        ExplicitTop = 15
+        ExplicitHeight = 30
       end
       object lblNomeCliente: TLabel
         AlignWithMargins = True

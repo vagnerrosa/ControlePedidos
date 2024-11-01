@@ -39,7 +39,7 @@ type
       Username: string;
       Password: string;
       DriverID : string;
-
+      DLL      : string;
   public
     { Public declarations }
       MsgErro: string;
@@ -74,7 +74,7 @@ begin
     FDConnection.Params.Add('User_name=' + Username);
     FDConnection.Params.Add('Password=' + Password);
     FDConnection.Params.Add('DriverID=' + DriverID);
-    FDPhysMySQLDriverLink.VendorLib := ExtractFilePath(Application.ExeName)+'dll\libmySQL.dll';
+    FDPhysMySQLDriverLink.VendorLib := DLL;
     try
       FDConnection.Connected := True;
     except
@@ -105,6 +105,7 @@ begin
       Username := Ini.ReadString('Config','Username', '');
       Password := Ini.ReadString('Config','Password', '');
       DriverID := Ini.ReadString('Config','DriverID', '');
+      DLL      := Ini.ReadString('Config','Dll', '');
     finally
       Result := True;
       Ini.Free;

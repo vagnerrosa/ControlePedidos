@@ -44,6 +44,7 @@ type
     destructor  Destroy;
     function GravarPedido(CodigoCliente: Integer; PedidoProduto: TList<TPedidoProduto>): Boolean; // Método para gravar pedido
     function BuscarPedido(NumeroPedido: Integer; out Pedido: TPedido; out Produtos: TList<TPedidoProduto>): Boolean; // Método para buscar pedido
+    function DeletarPedido(ANumeroPedido: Integer): Boolean;  // Método para apagar pedido
   end;
 
 
@@ -162,7 +163,36 @@ begin
   end;
 end;
 
+function TPedidoModel.DeletarPedido(ANumeroPedido: Integer): Boolean;
+var
+  FDQuery: TFDQuery;
+begin
+  Result := False;
+  FDQuery := TFDQuery.Create(nil);
+  try
+    FDQuery.Connection := Model.Connection.FConnection;
+    Model.Connection.FConnection.StartTransaction;
+    try
+      // Deletar produtos relacionados ao pedido
+      FDQuery.SQL.Text := 'DELETE FROM pedidos_produtos WHERE numero_pedido = :numero_pedido';
+      FDQuery.ParamByName('numero_pedido').AsInteger := ANumeroPedido;
+      FDQuery.ExecSQL;
 
+      // Deletar o pedido
+      FDQuery.SQL.Text := 'DELETE FROM pedidos WHERE numero_pedido = :numero_pedido';
+      FDQuery.ParamByName('numero_pedido').AsInteger := ANumeroPedido;
+      FDQuery.ExecSQL;
+
+       Model.Connection.FConnection.Commit;
+      Result := True;
+    except
+       Model.Connection.FConnection.Rollback;
+      raise;
+    end;
+  finally
+    FDQuery.Free;
+  end;
+end;
 
 end.
 

@@ -25,7 +25,7 @@ type
     destructor Destroy; override;
     function GravarPedido(mtbPedido: TFDMemTable; mtbPedidoItem: TFDMemTable): Boolean;
     function BuscarPedido(NumeroPedido: Integer; out Pedido: TPedido; out Produtos: TList<TPedidoProduto>): Boolean;
-
+    function DeletarPedido(ANumeroPedido: Integer): Boolean;
   end;
 
 implementation
@@ -85,6 +85,11 @@ begin
   Result := FModel.BuscarPedido(NumeroPedido, Pedido, Produtos);
 end;
 
+function TPedidoController.DeletarPedido(ANumeroPedido: Integer): Boolean;
+begin
+    // Chama o método do modelo para apagar o pedido e os produtos
+    Result := FModel.DeletarPedido(ANumeroPedido);
+end;
 
 end.
 

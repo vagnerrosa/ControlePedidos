@@ -69,6 +69,13 @@ INSERT INTO `clientes` (`codigo`, `nome`, `cidade`, `uf`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Índices para tabela `clientes`
+--
+ALTER TABLE `clientes`
+  ADD PRIMARY KEY (`codigo`),
+  ADD KEY `idx_cliente` (`nome`);
+
+--
 -- Estrutura da tabela `pedidos`
 --
 
@@ -117,6 +124,13 @@ INSERT INTO `pedidos` (`numero_pedido`, `data_emissao`, `codigo_cliente`, `valor
 (31, '2024-10-28', 8, 5.99);
 
 -- --------------------------------------------------------
+--
+-- Índices para tabela `pedidos`
+--
+ALTER TABLE `pedidos`
+  ADD PRIMARY KEY (`numero_pedido`),
+  ADD KEY `idx_codigo_cliente` (`codigo_cliente`);
+
 
 --
 -- Estrutura da tabela `pedidos_produtos`
@@ -514,6 +528,13 @@ INSERT INTO `pedidos_produtos` (`id`, `numero_pedido`, `codigo_produto`, `quanti
 (376, 25, 10, 1, 2.50, 2.50);
 
 -- --------------------------------------------------------
+--
+-- Índices para tabela `pedidos_produtos`
+--
+ALTER TABLE `pedidos_produtos`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_numero_pedido` (`numero_pedido`),
+  ADD KEY `idx_codigo_produto` (`codigo_produto`);
 
 --
 -- Estrutura da tabela `produtos`
@@ -558,32 +579,6 @@ INSERT INTO `produtos` (`codigo`, `descricao`, `preco_venda`) VALUES
 (26, 'Produto Z', 23.45);
 
 --
--- Índices para tabelas despejadas
---
-
---
--- Índices para tabela `clientes`
---
-ALTER TABLE `clientes`
-  ADD PRIMARY KEY (`codigo`),
-  ADD KEY `idx_cliente` (`nome`);
-
---
--- Índices para tabela `pedidos`
---
-ALTER TABLE `pedidos`
-  ADD PRIMARY KEY (`numero_pedido`),
-  ADD KEY `idx_codigo_cliente` (`codigo_cliente`);
-
---
--- Índices para tabela `pedidos_produtos`
---
-ALTER TABLE `pedidos_produtos`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `idx_numero_pedido` (`numero_pedido`),
-  ADD KEY `idx_codigo_produto` (`codigo_produto`);
-
---
 -- Índices para tabela `produtos`
 --
 ALTER TABLE `produtos`
@@ -593,7 +588,6 @@ ALTER TABLE `produtos`
 --
 -- AUTO_INCREMENT de tabelas despejadas
 --
-
 --
 -- AUTO_INCREMENT de tabela `clientes`
 --
@@ -617,10 +611,6 @@ ALTER TABLE `pedidos_produtos`
 --
 ALTER TABLE `produtos`
   MODIFY `codigo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
-
---
--- Restrições para despejos de tabelas
---
 
 --
 -- Limitadores para a tabela `pedidos`
